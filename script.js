@@ -1,26 +1,23 @@
-// For the title
+
 const title = document.querySelector('#title');
-// For reg form
+
 const regForm = document.querySelector('.regForm');
 
-// For reg form fields
+
 const usernameReg = document.getElementById('usernameReg');
 const passwordReg = document.getElementById('passwordReg');
 
-// For login form
+
 const logForm = document.querySelector('.logForm');
 
-// For login form fields
 const username = document.getElementById('username');
 const password = document.getElementById('password');
 
-// For username and passwords
+
 const usernameAndPasswords = {}
 
-// For getting the date and time today
 const time = new Date().toLocaleString();
 
-// For checking if a username already exists
 function checkIfUserExists(username, usernameAndPasswords) {
 	if (usernameAndPasswords.hasOwnProperty(username)) {
 		return true
@@ -34,33 +31,58 @@ function validateUserNameAndPassword(username, password, usernameAndPasswords,) 
 	}
 }
 
+
 regForm.addEventListener('submit', function (e) {
 	e.preventDefault();
 
 	// Validate if one of the fields are empty
 	if(usernameReg.value.length == 0 || passwordReg.value.length == 0) {
 		alert("Fill out all the forms first");
+		return;
+	}
+
+	// Check password criteria
+	if (!validatePassword(passwordReg.value)) {
+		alert("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one non-numeric character.");
+		return;
 	}
 
 	// Store username and password to JS object
-	else {
-		if (checkIfUserExists(usernameReg.value, usernameAndPasswords)) {
-			alert('Username is already taken');
-		}
-		else {
-
-			// Store the username and passwords inside the JavaScript Object 
-			usernameAndPasswords[usernameReg.value] = passwordReg.value;
-			console.log(usernameAndPasswords);
-
-			// Display the login form and get rid of the registration form on the page
-			logForm.style.display = "block";
-			regForm.style.display = "none";
-
-		}
+	if (checkIfUserExists(usernameReg.value, usernameAndPasswords)) {
+		alert('Username is already taken');
+		return;
 	}
 
-})
+	// If all checks pass, proceed with registration
+	usernameAndPasswords[usernameReg.value] = passwordReg.value;
+	console.log(usernameAndPasswords);
+
+	// Display the login form and hide the registration form
+	logForm.style.display = "block";
+	regForm.style.display = "none";
+});
+
+// Function to validate password criteria
+function validatePassword(password) {
+    // Check length
+    if (password.length < 8) {
+        return false;
+    }
+
+    // Check if consists of only integers
+    if (/^\d+$/.test(password)) {
+        return false;
+    }
+
+    // Check if combination of uppercase and lowercase characters
+    if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) {
+        return false;
+    }
+
+    return true;
+}
+
+
 
 logForm.addEventListener('submit', function (e) {
 
@@ -82,34 +104,4 @@ logForm.addEventListener('submit', function (e) {
 	}
 
 })
-
-function validateAndSubmit() {
-    const password = document.getElementById('passwordReg').value;
-
-    // Check length
-    if (password.length < 8) {
-        alert('Password must be at least 8 characters long');
-        return false;
-    }
-
-    // Check if consists of only integers
-    if (/^\d+$/.test(password)) {
-        alert('Password must contain at least one letter');
-        return false;
-    }
-
-    // Check if combination of uppercase and lowercase characters
-    if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) {
-        alert('Password must contain at least one uppercase and one lowercase letter');
-        return false;
-    }
-
-    // If successful, submit the form
-    document.getElementById('registrationForm').submit();
-
-    // Show success message
-    alert('Registration successful');
-
-    return true;
-}
 
